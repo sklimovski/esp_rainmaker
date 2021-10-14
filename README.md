@@ -1,3 +1,8 @@
+Created at: 14/10/2021
+
+This repo has been forked from https://github.com/chmoore889/esp_rainmaker
+In order to make small bug fixes for the ba2 app 
+
 ## Introduction
 A wrapper of the ESP Rainmaker REST API for client-cloud communication.
 
