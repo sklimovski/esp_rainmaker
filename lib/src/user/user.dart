@@ -1,6 +1,7 @@
 import 'package:esp_rainmaker/esp_rainmaker.dart';
 import 'package:esp_rainmaker/src/user/response_models.dart';
 import 'package:esp_rainmaker/src/url_base.dart';
+import 'package:esp_rainmaker/src/user/user_errors.dart';
 import 'package:http/http.dart';
 import 'package:isolate_json/isolate_json.dart';
 
@@ -50,12 +51,38 @@ class User {
     final resp = await post(uri, body: body);
     final Map<String, dynamic> bodyResp =
         await JsonIsolate().decodeJson(resp.body);
+
     if (resp.statusCode != 201) {
+      if (bodyResp['error_code'] == 101001 ||
+          bodyResp['error_code'] == 101003) {
+        throw MissingUsernameOrPassword();
+      }
       if (bodyResp['error_code'] == 101002) {
         throw InvalidEmailException();
       }
-      if (bodyResp['error_code'] == 101006) {
-        throw UserAlreadyExistsException();
+      if (bodyResp['error_code'] == 101004 ||
+          bodyResp['error_code'] == 101007 ||
+          bodyResp['error_code'] == 101009) {
+        throw InvalidPasswordOrUserName();
+      }
+
+      if (bodyResp['error_code'] == 101008) {
+        throw ContextDetailsException();
+      }
+      if (bodyResp['error_code'] == 101005) {
+        throw SendingCodeFailed();
+      }
+      if (bodyResp['error_code'] == 101008) {
+        throw FailedUserCreationException();
+      }
+      if (bodyResp['error_code'] == 101013) {
+        throw UnverifiedEmailException();
+      }
+      if (bodyResp['error_code'] == 101012) {
+        throw IncorrectVerificationCode();
+      }
+      if (bodyResp['error_code'] == 101019) {
+        throw TimeLimitExceeded();
       }
       throw bodyResp['description'];
     }
@@ -268,69 +295,4 @@ class User {
     }
     return UserData.fromJson(bodyResp);
   }
-}
-
-abstract class RainmakerAuthException implements Exception {
-  final String frontFacingText;
-
-  const RainmakerAuthException(this.frontFacingText);
-
-  @override
-  String toString();
-}
-
-class FailedPasswordException extends RainmakerAuthException {
-  const FailedPasswordException()
-      : super(
-            'There was a problem with your request. You might not have an account.');
-
-  @override
-  String toString() => 'FailedPasswordException: ${super.frontFacingText}';
-}
-
-class UnverifiedEmailException extends RainmakerAuthException {
-  const UnverifiedEmailException()
-      : super('The email used to login has not been verified');
-
-  @override
-  String toString() => 'UnverifiedEmailException: ${super.frontFacingText}';
-}
-
-class InvalidCredentialsException extends RainmakerAuthException {
-  const InvalidCredentialsException() : super('Incorrect username or password');
-
-  @override
-  String toString() => 'InvalidCredentialsException: ${super.frontFacingText}';
-}
-
-class UserAlreadyExistsException extends RainmakerAuthException {
-  const UserAlreadyExistsException()
-      : super('A user with this email already exists');
-
-  @override
-  String toString() => 'UserAlreadyExistsException: ${super.frontFacingText}';
-}
-
-class BadVerificationException extends RainmakerAuthException {
-  const BadVerificationException()
-      : super('The verification code is incorrect');
-
-  @override
-  String toString() => 'BadVerificationException: ${super.frontFacingText}';
-}
-
-class InvalidEmailException extends RainmakerAuthException {
-  const InvalidEmailException() : super('The entered email is not valid');
-
-  @override
-  String toString() => 'InvalidEmailException: ${super.frontFacingText}';
-}
-
-class BadRefreshTokenException extends RainmakerAuthException {
-  const BadRefreshTokenException()
-      : super(
-            'There was a problem authenticating you. Please log out and try again.');
-
-  @override
-  String toString() => 'BadRefreshTokenException: ${super.frontFacingText}';
 }
