@@ -53,38 +53,7 @@ class User {
         await JsonIsolate().decodeJson(resp.body);
 
     if (resp.statusCode != 201) {
-      if (bodyResp['error_code'] == 101001 ||
-          bodyResp['error_code'] == 101003) {
-        throw MissingUsernameOrPassword();
-      }
-      if (bodyResp['error_code'] == 101002) {
-        throw InvalidEmailException();
-      }
-      if (bodyResp['error_code'] == 101004 ||
-          bodyResp['error_code'] == 101007 ||
-          bodyResp['error_code'] == 101009) {
-        throw InvalidPasswordOrUserName();
-      }
-
-      if (bodyResp['error_code'] == 101008) {
-        throw ContextDetailsException();
-      }
-      if (bodyResp['error_code'] == 101005) {
-        throw SendingCodeFailed();
-      }
-      if (bodyResp['error_code'] == 101008) {
-        throw FailedUserCreationException();
-      }
-      if (bodyResp['error_code'] == 101013) {
-        throw UnverifiedEmailException();
-      }
-      if (bodyResp['error_code'] == 101012) {
-        throw IncorrectVerificationCode();
-      }
-      if (bodyResp['error_code'] == 101019) {
-        throw TimeLimitExceeded();
-      }
-      throw bodyResp['description'];
+      handleCreateConfirmUserError(bodyResp['error_code']);
     }
   }
 
@@ -109,13 +78,41 @@ class User {
     final Map<String, dynamic> bodyResp =
         await JsonIsolate().decodeJson(resp.body);
     if (resp.statusCode != 201) {
-      if (bodyResp['error_code'] == 101002) {
+      handleCreateConfirmUserError(bodyResp['error_code']);
+    }
+  }
+
+  // Error Handling for create / confirm user requests
+
+  handleCreateConfirmUserError(errorCode) {
+    switch (errorCode) {
+      case (101001):
+      case (101003):
+        throw MissingUsernameOrPassword();
+      case (101002):
         throw InvalidEmailException();
-      }
-      if (bodyResp['error_code'] == 101012) {
-        throw BadVerificationException();
-      }
-      throw bodyResp['description'];
+      case (101004):
+      case (101007):
+      case (101009):
+        throw InvalidPasswordOrUserName();
+      case (101005):
+        throw SendingCodeFailed();
+      case (101006):
+        throw UserAlreadyExistsException();
+      case (101011):
+        throw UserNameAlreadyVerified();
+      case (101008):
+        throw FailedUserCreationException();
+      case (100008):
+        throw ContextDetailsException();
+      case (101013):
+        throw UnverifiedEmailException();
+      case (101012):
+        throw IncorrectVerificationCode();
+      case (101019):
+        throw TimeLimitExceeded();
+      default:
+        throw Exception('Unknown Error');
     }
   }
 

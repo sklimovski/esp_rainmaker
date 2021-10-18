@@ -42,15 +42,6 @@ class UserAlreadyExistsException extends RainmakerAuthException {
   String toString() => '${super.description}';
 }
 
-class BadVerificationException extends RainmakerAuthException {
-  const BadVerificationException()
-      : super(
-            "Invalid Verification Code", 'The verification code is incorrect');
-
-  @override
-  String toString() => '${super.description}';
-}
-
 class InvalidEmailException extends RainmakerAuthException {
   const InvalidEmailException()
       : super("Invalid Email", 'The entered email is not valid');
