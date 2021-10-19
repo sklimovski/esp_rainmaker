@@ -1,8 +1,9 @@
 abstract class RainmakerAuthException implements Exception {
   final String description;
   final String type;
+  final String action;
 
-  const RainmakerAuthException(this.type, this.description);
+  const RainmakerAuthException(this.type, this.description, this.action);
 
   @override
   String toString();
@@ -10,8 +11,10 @@ abstract class RainmakerAuthException implements Exception {
 
 class FailedPasswordException extends RainmakerAuthException {
   const FailedPasswordException()
-      : super('Failed Password',
-            'There was a problem with your request. You might not have an account.');
+      : super(
+            'Failed Password',
+            'There was a problem with your request. You might not have an account.',
+            'Try again');
 
   @override
   String toString() => '${super.description}';
@@ -19,8 +22,10 @@ class FailedPasswordException extends RainmakerAuthException {
 
 class UnverifiedEmailException extends RainmakerAuthException {
   const UnverifiedEmailException()
-      : super("Unverified Email",
-            'The email used to login has not been verified');
+      : super(
+            "Unverified Email",
+            'An account is already associated with this email. Please verify your account to proceed.',
+            'Verify account');
 
   @override
   String toString() => '${super.description}';
@@ -28,7 +33,8 @@ class UnverifiedEmailException extends RainmakerAuthException {
 
 class InvalidCredentialsException extends RainmakerAuthException {
   const InvalidCredentialsException()
-      : super("Invalid Credentials", 'Incorrect username or password');
+      : super("Invalid Credentials", 'Incorrect username or password',
+            'Try again');
 
   @override
   String toString() => '${super.description}';
@@ -36,7 +42,10 @@ class InvalidCredentialsException extends RainmakerAuthException {
 
 class UserAlreadyExistsException extends RainmakerAuthException {
   const UserAlreadyExistsException()
-      : super("A User Already Exists", 'A user with this email already exists');
+      : super(
+            "A User Already Exists",
+            'An account is already associated with this email. Please try another email.',
+            'Try again');
 
   @override
   String toString() => '${super.description}';
@@ -44,7 +53,10 @@ class UserAlreadyExistsException extends RainmakerAuthException {
 
 class InvalidEmailException extends RainmakerAuthException {
   const InvalidEmailException()
-      : super("Invalid Email", 'The entered email is not valid');
+      : super(
+            "Invalid Email",
+            "There's an error with creating your account. Please try again.",
+            'Try again');
 
   @override
   String toString() => '${super.description}';
@@ -52,7 +64,10 @@ class InvalidEmailException extends RainmakerAuthException {
 
 class MissingUsernameOrPassword extends RainmakerAuthException {
   const MissingUsernameOrPassword()
-      : super("Missing Credentials", 'The user name or password is missing');
+      : super(
+            "Missing Credentials",
+            "There's an error with creating your account. Please try again.",
+            'Try again');
 
   @override
   String toString() => '${super.description}';
@@ -60,8 +75,10 @@ class MissingUsernameOrPassword extends RainmakerAuthException {
 
 class InvalidPasswordOrUserName extends RainmakerAuthException {
   const InvalidPasswordOrUserName()
-      : super("Invalid Password",
-            'Incorrect user name or password. Password must be at least 8 characters long and should contain at least one uppercase, one lowercase character and a number');
+      : super(
+            "Invalid Password",
+            "There's an error with creating your account. Please try again.",
+            'Try again');
 
   @override
   String toString() => '${super.description}';
@@ -69,7 +86,10 @@ class InvalidPasswordOrUserName extends RainmakerAuthException {
 
 class UserNameAlreadyVerified extends RainmakerAuthException {
   const UserNameAlreadyVerified()
-      : super("User Name Already Verified", 'User name already verified');
+      : super(
+            "User Name Already Verified",
+            'User name already verified. Please log-in to your account.',
+            'Go back to Login');
 
   @override
   String toString() => '${super.description}';
@@ -77,7 +97,8 @@ class UserNameAlreadyVerified extends RainmakerAuthException {
 
 class IncorrectVerificationCode extends RainmakerAuthException {
   const IncorrectVerificationCode()
-      : super("Incorrect Verification Code", 'Verification code is incorrect');
+      : super("Incorrect Verification Code", 'Verification code is incorrect.',
+            "Try again");
 
   @override
   String toString() => '${super.description}';
@@ -86,7 +107,7 @@ class IncorrectVerificationCode extends RainmakerAuthException {
 class TimeLimitExceeded extends RainmakerAuthException {
   const TimeLimitExceeded()
       : super('Time Limit Exceeded',
-            'Attempt limit exceeded, please try after some time');
+            'Time limit exceeded. Please try again later.', "Go back");
 
   @override
   String toString() => '${super.description}';
@@ -94,8 +115,10 @@ class TimeLimitExceeded extends RainmakerAuthException {
 
 class SendingCodeFailed extends RainmakerAuthException {
   const SendingCodeFailed()
-      : super("Could Not Send Verification Code",
-            'Sending verification code failed');
+      : super(
+            "Could Not Send Verification Code",
+            "There's an error with verifying your account. Please check your details",
+            "Go back");
 
   @override
   String toString() => '${super.description}';
@@ -103,7 +126,10 @@ class SendingCodeFailed extends RainmakerAuthException {
 
 class FailedUserCreationException extends RainmakerAuthException {
   const FailedUserCreationException()
-      : super("Failed User Creation", 'Creating user failed');
+      : super(
+            "Failed User Creation",
+            "There's an error with verifying your account. Please check your details",
+            "Go back");
 
   @override
   String toString() => '${super.description}';
@@ -111,7 +137,10 @@ class FailedUserCreationException extends RainmakerAuthException {
 
 class UserCodeConfirmationException extends RainmakerAuthException {
   const UserCodeConfirmationException()
-      : super("Failed User Confirmation", 'User confirmation failed');
+      : super(
+            "Failed User Confirmation",
+            "There's an error with verifying your account. Please check your details",
+            "Go back");
 
   @override
   String toString() => '${super.description}';
@@ -119,8 +148,10 @@ class UserCodeConfirmationException extends RainmakerAuthException {
 
 class BadRefreshTokenException extends RainmakerAuthException {
   const BadRefreshTokenException()
-      : super("Authentication Error",
-            'There was a problem authenticating you. Please log out and try again.');
+      : super(
+            "Authentication Error",
+            'There was a problem authenticating you. Please log out and try again.',
+            "Try again");
 
   @override
   String toString() => '${super.description}';
@@ -129,7 +160,9 @@ class BadRefreshTokenException extends RainmakerAuthException {
 class ContextDetailsException extends RainmakerAuthException {
   const ContextDetailsException()
       : super(
-            "Authentication Error", 'Error in fetching tenant context details');
+            "Authentication Error",
+            "There's an error with verifying your account. Please check your details",
+            "Go back");
 
   @override
   String toString() => '${super.description}';
