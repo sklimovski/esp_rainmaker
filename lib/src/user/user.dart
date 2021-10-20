@@ -106,7 +106,7 @@ class User {
       case (100008):
         throw ContextDetailsException();
       case (101013):
-        throw UnverifiedEmailException();
+        throw UserCodeConfirmationException();
       case (101012):
         throw IncorrectVerificationCode();
       case (101019):
